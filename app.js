@@ -7,7 +7,7 @@ var cors = require("cors");
 const errorMiddleware = require("./middleware/error");
 
 // Config
-dotenv.config({ path: "./config/config.env" });
+dotenv.config({ path: ".env" });
 
 // Middleware
 app.use(
