@@ -10,7 +10,7 @@ process.on("uncaughtException", (err) => {
 });
 
 //Config
-dotenv.config({ path: "./config/config.env" });
+dotenv.config({ path: ".env" });
 
 // Connecting to database
 connectDatabase();
