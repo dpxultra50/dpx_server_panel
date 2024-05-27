@@ -45,9 +45,11 @@ router.put(
   updateProject
 );
 
-router
-  .route("/admin/projects")
-  .get(isAuthenticatedUser, authorizeRoles("admin"), getAllProject);
+// router
+//   .route("/admin/projects")
+//   .get(isAuthenticatedUser, authorizeRoles("admin"), getAllProject);
+
+router.route("/admin/projects").get(getAllProject);
 
 router.route("/display/projects").get(displayProject);
 
