@@ -65,9 +65,12 @@ router.put(
   updateProfile
 );
 
-router
-  .route("/admin/users")
-  .get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);
+// router
+//   .route("/admin/users")
+//   .get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);
+
+router.route("/admin/users").get(getAllUser);
+
 router
   .route("/admin/users/unverified")
   .get(isAuthenticatedUser, authorizeRoles("admin"), getAllUnverifiedUser);
