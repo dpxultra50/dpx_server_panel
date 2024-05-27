@@ -27,3 +27,11 @@ exports.getAllQuote = catchAsyncErrors(async (req, res, next) => {
     allQuotes: newsletters,
   });
 });
+
+//HELLOWORLD TEST ROUTE
+exports.helloworld = catchAsyncErrors(async (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    message: "😀Hello, world!",
+  });
+});
