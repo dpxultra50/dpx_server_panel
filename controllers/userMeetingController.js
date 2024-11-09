@@ -39,24 +39,65 @@ exports.userMeetingRequest = catchAsyncErrors(async (req, res, next) => {
     preferredPlatform: parsedPreferredPlatform,
   });
 
-  //If logind user do request adding user id
+  // If logged-in user made the request, add user ID
   var user;
-
-  if (token === undefined) {
-    res.status(201).json({
-      success: true,
-      meetingId: userMeeting._id,
-    });
-  } else {
+  if (token !== undefined) {
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
     user = await User.findById(decodedData.id);
     userMeeting.user = user._id;
     await userMeeting.save();
-    res.status(201).json({
-      success: true,
-      meetingId: userMeeting._id,
-    });
   }
+
+  // Meeting details link
+  const meetingDetailsLink = `${process.env.FRONTEND_URL}/#/meeting/details/${userMeeting._id}`;
+  const platform = parsedPreferredPlatform.platformName || "N/A";
+  const link = parsedPreferredPlatform.platformAddress || "N/A";
+  const credential = parsedPreferredPlatform.requiredCredential || "N/A";
+  const startTimeDate = moment(userMeeting.startTime).format("llll");
+
+  // Constructing the email message
+  const notificationMessage = `
+    New Meeting Request from ${name}:
+    
+    - Inquiry Type: ${inquiryType}
+    - Message: ${message}
+    - Phone Number: ${phonenumber}
+    - Email: ${email}
+    - Start Time: ${startTimeDate}
+    - Time Zone: ${timeZone}
+    - Preferred Platform: ${platform}
+    - Meeting Link: ${link}
+    - Credential (if required): ${credential}
+    
+    For more details, visit: ${meetingDetailsLink}
+  `;
+
+  // List of emails to notify
+  const notificationEmails = [
+    "rezowan.datapollex@gmail.com",
+    "rakib.datapollex@gmail.com",
+    "dipto.datapollex@gmail.com",
+    "datapollex@gmail.com",
+  ];
+
+  // Sending email notifications
+  try {
+    for (const recipientEmail of notificationEmails) {
+      await sendEmail({
+        email: recipientEmail,
+        subject: "New Meeting Request on DataPollex",
+        message: notificationMessage,
+      });
+    }
+  } catch (error) {
+    return next(new ErrorHander("Failed to send notification emails", 500));
+  }
+
+  res.status(201).json({
+    success: true,
+    meetingId: userMeeting._id,
+    message: "Meeting request created and notifications sent successfully.",
+  });
 });
 
 // Get Users Meeting Detail
