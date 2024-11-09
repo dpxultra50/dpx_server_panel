@@ -85,7 +85,7 @@ exports.userMeetingRequest = catchAsyncErrors(async (req, res, next) => {
     for (const recipientEmail of notificationEmails) {
       await sendEmail({
         email: recipientEmail,
-        subject: "New Meeting Request on DataPollex",
+        subject: `New Meeting Request from ${name}`,
         message: notificationMessage,
       });
     }
